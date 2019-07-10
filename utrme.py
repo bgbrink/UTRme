@@ -196,7 +196,7 @@ def runcml(cml,program,error,logger,bool):
     stdout, stderr = process.communicate()
     stderr = stderr.decode("utf-8")
     stdout = stdout.decode("utf-8")
-    if stderr != "" and "merging" not in stderr and "bam_sort_core" not in stderr:
+    if stderr != "" and "merging" not in stderr and "bam_sort_core" not in stderr and "WARNING" not in stderr:
         mssg = error + ":   " + stderr
         print(cml)
         print(mssg)
@@ -423,6 +423,7 @@ def get_intergenic(genome,gff_file,chrom_size,dirout,logger):
 def clean_intergenic(output_file):
     df = pd.read_table(output_file,sep="\t",header=None,names=["id","start","end"])
     df = df[(df["end"] >= 0) & (df["start"] >= 0)]
+    df = df[(df["start"] < df["end"])]
     df.to_csv(output_file,header=False,index=False,sep="\t")   
     return output_file
 
@@ -1557,10 +1558,10 @@ def main():
             GenerateGFF(Annotation,dfa,annot_dir,Basename,excel,feature,identificator,logger,5,"All")
             del(dfa)
             GenerateGFF(Annotation,dfbsl,annot_dir,Basename,excel,feature,identificator,logger,5,"Best")
-            utrmekdeplot(dfbsl,"score",3,"score","score",fig_dir,"5utr-score",5)
-            utrmekdeplot(dfbsl,"sites",3,"sites","sites",fig_dir,"5utr-sites",5)
-            utrmekdeplot(dfbsl,"utr_len",3,"nucleotide","length",fig_dir,"5utr-length",5)
-            utrmejointplot(dfbsl,3,fig_dir,"5utr-score_vs_ocurrence",5)
+#            utrmekdeplot(dfbsl,"score",3,"score","score",fig_dir,"5utr-score",5)
+#            utrmekdeplot(dfbsl,"sites",3,"sites","sites",fig_dir,"5utr-sites",5)
+#            utrmekdeplot(dfbsl,"utr_len",3,"nucleotide","length",fig_dir,"5utr-length",5)
+#            utrmejointplot(dfbsl,3,fig_dir,"5utr-score_vs_ocurrence",5)
             #print('Graphics: Memory usage: %s (kb)' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
             end_time = time.time()
             fiveInfo = "The analysis of the 5' UTRs has a execution time of: " + timer(start_time_program,end_time) + "."
@@ -1592,10 +1593,10 @@ def main():
             GenerateGFF(Annotation,dfa,annot_dir,Basename,excel,feature,identificator,logger,3,"All")
             del(dfa)
             GenerateGFF(Annotation,dfbpa,annot_dir,Basename,excel,feature,identificator,logger,3,"Best")
-            utrmekdeplot(dfbpa,"score",3,"score","score",fig_dir,"3utr-score",3)
-            utrmekdeplot(dfbpa,"utr_len",3,"nucleotide","length",fig_dir,"3utr-length",3)
-            utrmekdeplot(dfbpa,"sites",3,"sites","sites",fig_dir,"3utr-sites",3)
-            utrmejointplot(dfbpa,3,fig_dir,"3utr-score_vs_ocurrence",3)
+#            utrmekdeplot(dfbpa,"score",3,"score","score",fig_dir,"3utr-score",3)
+#            utrmekdeplot(dfbpa,"utr_len",3,"nucleotide","length",fig_dir,"3utr-length",3)
+#            utrmekdeplot(dfbpa,"sites",3,"sites","sites",fig_dir,"3utr-sites",3)
+#            utrmejointplot(dfbpa,3,fig_dir,"3utr-score_vs_ocurrence",3)
             end_time = time.time()
             threeInfo = "> The analysis of the 3' UTRs has a execution time of: " + timer(start_time_program,end_time) + "."
             logger.info(threeInfo) 
@@ -1606,12 +1607,12 @@ def main():
     else:
         print("utr3_value must be YES or NO, not ",polya)
         sys.exit(0)
-    if booleanpa and booleansl:
-        vsplot(dfbsl,dfbpa,"score","Score","score",3,fig_dir,"vsplot-score")
-        vsplot(dfbsl,dfbpa,"utr_len","UTR Length","length",3,fig_dir,"vsplot-length")
-        vsplot(dfbsl,dfbpa,"sites","Gene sites","sites",3,fig_dir,"vsplot-sites")
-        del(dfbsl)
-        del(dfbpa)    
+#    if booleanpa and booleansl:
+#        vsplot(dfbsl,dfbpa,"score","Score","score",3,fig_dir,"vsplot-score")
+#        vsplot(dfbsl,dfbpa,"utr_len","UTR Length","length",3,fig_dir,"vsplot-length")
+#        vsplot(dfbsl,dfbpa,"sites","Gene sites","sites",3,fig_dir,"vsplot-sites")
+#        del(dfbsl)
+#        del(dfbpa)    
     #Finishing    
     os.remove(closest)
     if rmtemp == "YES":
